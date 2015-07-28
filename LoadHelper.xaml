@@ -1,0 +1,31 @@
+﻿<Window x:Class="QualitySystem.LoadHelper"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Загрузить" Height="208" Width="302">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="35" />
+        </Grid.RowDefinitions>
+        
+        <GroupBox Grid.Row="0" Header="Загрузить из базы данных">
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Margin="0,3">
+                    <Label Content="ID" />
+                    <TextBox Name="textBoxID" Margin="5,0" Width="100" />
+                    <Button Name="okButton" Content="Загрузить" Width="120" Margin="5,0" Click="okButton_Click" />
+                </StackPanel>
+                <RadioButton Name="radioLoadReg" Content="Регрессонная модель" IsChecked="True" Margin="3,2,0,0"/>
+                <RadioButton Name="radioLoadDes" Content="Дискретная модель" Margin="3,2,0,0"/>
+                <RadioButton Name="radioLoadOpt" Content="Технология" Margin="3,2,0,0" Checked="radioLoadOpt_Checked" />
+                <CheckBox Name="checkLoadAll" IsEnabled="false" Content="Загрузить связанные модели" Margin="18,2,0,0" />
+                
+            </StackPanel>
+        </GroupBox>
+        <UniformGrid Grid.Row="1" Rows="1">
+            <Button Name="view" Grid.Row="2" Content="Показать доступные"  Margin="5" Click="view_Click" />
+            <Button Name="OK" Grid.Row="2" Content="Закрыть" Click="OK_Click" Margin="5" />
+        </UniformGrid>
+        
+    </Grid>
+</Window>

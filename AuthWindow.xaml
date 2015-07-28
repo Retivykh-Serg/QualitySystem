@@ -1,0 +1,29 @@
+﻿<Window x:Class="QualitySystem.AuthWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Авторизация" Height="186" Width="281">
+    <Grid>
+        <GroupBox Header="Подключение">
+            <DockPanel Margin="2">
+                <DockPanel DockPanel.Dock="Top">
+                    <Label Content="Сервер" Margin="5,0" DockPanel.Dock="Left"/>
+                    <TextBox Name="textBoxServ" Text="localhost"  Margin="4,2,15,2" />
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <Label Content="Логин" Margin="5,0" DockPanel.Dock="Left"/>
+                    <TextBox Name="textBoxLogin" Text="admin" Margin="11,2,15,2" />
+                </DockPanel>
+                <DockPanel DockPanel.Dock="Top">
+                    <Label Content="Пароль" Margin="5,0" DockPanel.Dock="Left"/>
+                    <TextBox Name="textBoxPass" Margin="3,2,15,2" />
+                </DockPanel>
+                <UniformGrid DockPanel.Dock="Top" Rows="1">
+                    <Button Content="Подключиться" Margin="5" Name="taskBtn" Click="taskBtn_Click" />
+                    <Button Content="Отмена" Margin="5" Name="cancelBtn" Click="cancelBtn_Click" />
+                </UniformGrid>
+            </DockPanel>
+        </GroupBox>
+        
+        
+    </Grid>
+</Window>

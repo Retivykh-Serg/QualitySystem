@@ -1,0 +1,79 @@
+﻿<Window x:Class="QualitySystem.DataSelect"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Загрузить данные" Height="550" Width="650" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="47*" />
+            <ColumnDefinition Width="19*" />
+        </Grid.ColumnDefinitions>
+
+            <DockPanel HorizontalAlignment="Stretch" Grid.Column="1" Grid.RowSpan="2" Margin="5,0,0,0">
+                <Label Content="Выберите марку стали" DockPanel.Dock="Top"/>
+                <ComboBox Name="markComboBox" DockPanel.Dock="Top" Height="20" VerticalAlignment="Top" Margin="10,-2" SelectionChanged="markComboBox_SelectionChanged" IsReadOnly="True" Text="" />
+                <Label Content="Выберите стандарт на марку" DockPanel.Dock="Top"/>
+                <ComboBox Name="gostComboBox" DockPanel.Dock="Top" Height="20" VerticalAlignment="Top" Margin="10,-2" SelectionChanged="gostComboBox_SelectionChanged" />
+                <Label Content="Выберите вытяжку" DockPanel.Dock="Top"/>
+                <ComboBox Name="typeComboBox" DockPanel.Dock="Top" Height="20" VerticalAlignment="Top" Margin="10,-2" />
+                <Label Content="Начало выборки" DockPanel.Dock="Top" />
+                <DatePicker Name="date1picker" DockPanel.Dock="Top" Margin="10,-2" SelectedDate="9/1/2008" SelectedDateFormat="Short" DisplayDate="9/1/2008" />
+                <Label Content="Окончание выборки" DockPanel.Dock="Top" />
+                <DatePicker Name="date2picker" DockPanel.Dock="Top" Margin="10,-2" SelectedDateFormat="Short" SelectedDate="9/1/2014" />
+                
+                <Button Name="startBtn" Content="Извлечь данные" Margin="10,50,10,0" Height="70" Click="startBtn_Click" DockPanel.Dock="Top" />
+                <Button Name="viewBtn" Content="Показать данные" IsEnabled="false" Height="40" Margin="10,10,10,10" DockPanel.Dock="Top" Click="viewBtn_Click" />             
+                <Button Name="okBtn" Height="30" Margin="10,10" Content="OK" DockPanel.Dock="Bottom" Click="okBtn_Click" />
+                <Label Name="labelResult" Margin="5, -2" DockPanel.Dock="Top" />
+                <Label Name="labelResult2" Margin="5, -2" DockPanel.Dock="Top"/>
+        </DockPanel>
+
+        <Grid Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="30" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="25" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+            
+            <Label Content="Выберите необходимые выходные свойства" Grid.ColumnSpan="3" Grid.Row="0"/>
+            <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Grid.Column="0" Grid.Row="1" >
+                <Label Content="Доступно" Margin="10,-5,0,-5" DockPanel.Dock="Top"/>
+                <ListBox Name="yListBox" HorizontalAlignment="Stretch" Margin="5,3" BorderThickness="3" />
+            </DockPanel>
+            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Grid.Row="1">
+                <Button Name="addOnebtn2" Margin="3" Content="&gt;" Click="addOnebtn2_Click" />
+                <Button Name="addAllbtn2" Margin="3" Content="&gt;&gt;" Click="addAllbtn2_Click" />
+                <Button Name="deleteOnebtn2" Margin="3" Content="&lt;" Click="deleteOnebtn2_Click"/>
+                <Button Name="deleteAllbtn2" Margin="3" Content="&lt;&lt;" Click="deleteAllbtn2_Click"/>
+            </StackPanel>
+            <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Grid.Column="2" Grid.Row="1" >
+                <Label Content="Выбрано" Margin="10,-5,0,-5" DockPanel.Dock="Top"/>
+                <ListBox Name="yTaskListBox" HorizontalAlignment="Stretch" Margin="5,3" BorderThickness="3" />
+            </DockPanel>
+            <Label Content="Выберите необходимые входные параметры" Grid.ColumnSpan="3" Grid.Row="2"/>
+            <DockPanel HorizontalAlignment="Stretch" Width="Auto" Grid.Column="0" Grid.Row="3" LastChildFill="True">
+                <Label Content="Доступно" Margin="10,-5,0,-5" DockPanel.Dock="Top"/>
+                <ListBox Name="xListBox" HorizontalAlignment="Stretch" Margin="5,3" BorderThickness="3" />
+            </DockPanel>
+            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Grid.Row="3">
+                <Button Name="addOnebtn" Margin="3" Content="&gt;" Click="addOnebtn_Click" />
+                <Button Name="addAllbtn" Margin="3" Content="&gt;&gt;" Click="addAllbtn_Click" />
+                <Button Name="deleteOnebtn" Margin="3" Content="&lt;" Click="deleteOnebtn_Click" />
+                <Button Name="deleteAllbtn" Margin="3" Content="&lt;&lt;" Click="deleteAllbtn_Click" />
+            </StackPanel>
+            <DockPanel HorizontalAlignment="Stretch" Width="Auto" Grid.Column="2" Grid.Row="3" >
+                <Label Content="Выбрано" Margin="10,-5,0,-5" DockPanel.Dock="Top"/>
+                <ListBox Name="xTaskListBox" HorizontalAlignment="Stretch" Margin="5,3" BorderThickness="3" />
+            </DockPanel>
+        </Grid>
+
+            
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Left" Margin="2,2,0,2" Name="gridSplitter1" VerticalAlignment="Stretch" Width="3" Grid.RowSpan="2" />
+    </Grid>
+</Window>

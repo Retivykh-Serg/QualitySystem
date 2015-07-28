@@ -1,0 +1,40 @@
+﻿<Window x:Class="QualitySystem.GostHelper"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:local="clr-namespace:QualitySystem"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Добавить стандарт" Height="313" Width="300">
+    <Window.Resources>
+        <local:DoubleConverter x:Key="DoubleConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="6*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+
+        <DockPanel Grid.Row="0">
+            <Label Content="Стандарт" DockPanel.Dock="Left" Margin="5,0" />
+            <TextBox Name="textBoxGost" Margin="3,0,5,0" />
+        </DockPanel>
+        <DockPanel Grid.Row="1">
+            <Label Content="Марка" DockPanel.Dock="Left" Margin="5,0" />
+            <TextBox Name="textBoxMarka" Margin="16,0,5,0" />
+        </DockPanel>
+        <DockPanel Grid.Row="2">
+            <Label Content="Вытяжка" DockPanel.Dock="Left" Margin="5,0" />
+            <TextBox Name="textBoxType" Margin="5,0" />
+        </DockPanel>
+        
+        <DataGrid Name="gridGOST" AutoGenerateColumns="false" Grid.Row="3" Margin="5,2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Свойство" Binding="{Binding Path=header}" IsReadOnly="True" ClipboardContentBinding="{x:Null}" Width="3*"/>
+                <DataGridTextColumn Header="Мин. зн-е" Width="4*" Binding="{Binding Path=val1, Converter={StaticResource DoubleConverter}}"  ClipboardContentBinding="{x:Null}"/>
+                <DataGridTextColumn Header="Макс. зн-е" Width="4*" Binding="{Binding Path=val2, Converter={StaticResource DoubleConverter}}"  ClipboardContentBinding="{x:Null}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Name="buttonGO" Margin="3" Grid.Row="4" Content="Добавить" Click="buttonGO_Click" />
+    </Grid>
+</Window>

@@ -1,0 +1,381 @@
+﻿<Window x:Class="QualitySystem.TaskConfig"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:QualitySystem"
+        xmlns:cm="clr-namespace:System.ComponentModel;assembly=System"
+        Title="Система контроля качества продукции"  Height="630" Width="871" Closing="Window_Closing">
+    <Window.Resources>
+        <local:DoubleConverter x:Key="DoubleConverter" />
+        <cm:BackgroundWorker x:Key="backgroundWorker" DoWork="BackgroundWorker_DoWork" RunWorkerCompleted="BackgroundWorker_RunWorkerCompleted" ProgressChanged="BackgroundWorker_ProgressChanged" WorkerReportsProgress="True"></cm:BackgroundWorker>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        
+        <Menu VerticalAlignment="Top" Grid.Row="0">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Загрузить шаблон" />
+                <MenuItem Header="Сохранить шаблон" />
+            </MenuItem>
+            <MenuItem Header="Модель">
+                <MenuItem Header="Выбрать данные" Click="dataMenuItem_Click" />
+                <MenuItem Header="Загрузить..." Click="loadMenuItem_Click" />
+                <MenuItem Header="Сохранить..." Click="saveMenuItem_Click" />
+            </MenuItem>
+            <MenuItem Header="Справка" />
+            <MenuItem Header="Стандарт">
+                <MenuItem Header="Добавить..." Click="gostMenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+        <DockPanel Grid.Row="1">
+            <Expander IsExpanded="True" ExpandDirection="Right" Grid.Row="1">
+                <StackPanel Orientation="Vertical" Margin="-15,20,5,0">
+                    <Expander Name="dataExpander" ExpandDirection="Down" Header="Данные">
+                        <StackPanel>
+                            <TextBlock Name="labelDataNotes" Text="Загружено записей:" Margin="2"/>
+                            <TextBlock Name="labelDataMark" Text="Марка:" Margin="2"/>
+                            <TextBlock Name="labelDataGOST" Text="Стандарт:" Margin="2"/>
+                            <TextBlock Name="labelDataSince" Text="С:" Margin="2"/>
+                            <TextBlock Name="labelDataTo" Text="По:" Margin="2"/>
+                        </StackPanel>  
+                    </Expander>
+                    <Expander Name="expanderReg" ExpandDirection="Down" Header="Регрессионная модель">
+                        <StackPanel>
+                            <TextBlock Name="labelRegID" Text="ID:" Margin="2"/>
+                            <TextBlock Name="labelRegDate" Text="Дата:" Margin="2"/>
+                            <TextBlock Name="labelRegType" Text="Тип:" Margin="2"/>
+                            <TextBlock Name="labelRegMark" Text="Марка:" Margin="2"/>
+                            <TextBlock Name="labelRegGOST" Text="Стандарт:" Margin="2"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander Name="expanderDesLeft" ExpandDirection="Down" Header="Дискретная модель">
+                        <StackPanel>
+                            <TextBlock Name="labelDesID" Text="ID:" Margin="2"/>
+                            <TextBlock Name="labelDesDate" Text="Дата:" Margin="2"/>
+                            <TextBlock Name="labelDesMark" Text="Марка:" Margin="2"/>
+                            <TextBlock Name="labelDesGOST" Text="Стандарт:" Margin="2"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander Name="expanderOpt" ExpandDirection="Down" Header="Технология">
+                        <StackPanel>
+                            <TextBlock Name="labelOptID" Text="ID:" Margin="2"/>
+                            <TextBlock Name="labelOptRegID" Text="ID регр-ной модели:" Margin="2"/>
+                            <TextBlock Name="labelOptDesID" Text="ID диск-ной модели:" Margin="2"/>
+                            <TextBlock Name="labelOptDate" Text="Дата:" Margin="2"/>
+                            <TextBlock Name="labelOptMark" Text="Марка:" Margin="2"/>
+                            <TextBlock Name="labelOptGOST" Text="Стандарт:" Margin="2"/>
+                        </StackPanel>
+                    </Expander>
+                    <Expander Name="expanderCor" ExpandDirection="Down" Header="Корректировка">
+                        <StackPanel>
+                            <TextBlock Name="labelCorID" Text="ID:" Margin="2"/>
+                            <TextBlock Name="labelCorOptID" Text="ID исх. технологии:" Margin="2"/>
+                            <TextBlock Name="labelCorDesID" Text="ID дискр. модели:" Margin="2"/>
+                            <TextBlock Name="labelCorDate"  Text="Дата:" Margin="2"/>
+                            <TextBlock Name="labelCorMark"  Text="Марка:" Margin="2"/>
+                            <TextBlock Name="labelCorGOST"  Text="Стандарт:" Margin="2"/>
+                        </StackPanel>
+                    </Expander>
+
+
+                </StackPanel>
+                
+            </Expander>
+            <TextBlock Name="Log" Text="Выберите данные или загрузите модель" DockPanel.Dock="Bottom" Margin="10,0,0,5" />
+
+            <TabControl Grid.Row="1" HorizontalAlignment="Stretch" Margin="0" Name="tabControl1" VerticalAlignment="Stretch" Width="Auto">
+                <TabItem Header="Данные" Name="tabItemData">
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                            <Label Name="labelDataX" Content="Количество исследуемых факторов - " Margin="5,0"/>
+                            <Label Name="labelDataY" Content="Количество исследуемых свойств - " Margin="10,0" />
+                        </StackPanel>
+                        <DataGrid Name="dataDataGrid" Margin="5"  />
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Регрессионная модель" Name="tabItemR">
+                    <DockPanel Name="mainPanel" Grid.Row="1">
+                        <DockPanel Name="regressDockPanel" DockPanel.Dock="Top" Visibility="Visible">
+                            <UniformGrid Name="regressButtonsPanel" DockPanel.Dock="Bottom" Rows="1">
+                                <Button Name="startModeling" Content="Построить простую модель" Margin="10, 5" Click="startModeling_Click" />
+                                <Button Name="startUpgrade" Content="Построить уточненную модель" Margin="10, 5" Click="startUpgrade_Click" />
+                            </UniformGrid>
+                            <DockPanel Name="gridsDockPanel" DockPanel.Dock="Top">
+                                <DataGrid Name="statGrid" Margin="10,3" AutoGenerateColumns="false" IsReadOnly="True" DockPanel.Dock="Bottom" Visibility="Collapsed">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="Auto" Binding="{Binding Path=descr}" IsReadOnly="True" ClipboardContentBinding="{x:Null}" Header="Свойство"/>
+                                        <DataGridTextColumn Width="1*" Binding="{Binding Path=rmserror}" ClipboardContentBinding="{x:Null}" Header="Стандартная ошибка"/>
+                                        <DataGridTextColumn Width="1*" Binding="{Binding Path=F}" ClipboardContentBinding="{x:Null}" Header="Критерий Фишера"/>
+                                        <DataGridTextColumn Width="1*" Binding="{Binding Path=F_test}" ClipboardContentBinding="{x:Null}" Header="Значимость F"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <DataGrid Name="funcGrid" Margin="3,3,10,3" AutoGenerateColumns="False" DockPanel.Dock="Right"  Visibility="Collapsed" IsReadOnly="True">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Width="1*" Binding="{Binding Path=header}"  ClipboardContentBinding="{x:Null}" Header="Фактор"/>
+                                        <DataGridTextColumn Width="1*" Binding="{Binding Path=str}" ClipboardContentBinding="{x:Null}" Header="Функция"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <DataGrid Name="modelGrid" Margin="10,3" AutoGenerateColumns="False" DockPanel.Dock="Top" MinColumnWidth="30" 
+                                           VerticalContentAlignment="Top" IsManipulationEnabled="True" IsReadOnly="True" SelectionUnit="Cell"/>
+                            </DockPanel>
+                        </DockPanel>
+                    </DockPanel>
+                </TabItem>
+                <TabItem Header="Дискретная модель" Name="tabItemD" >
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="2*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        <GroupBox Name="groupBoxBefore" Grid.Row="1" Grid.RowSpan="2" Header="Начальные границы" >
+                            <DataGrid Name="xDescrGrid" AutoGenerateColumns="False"   Visibility="Visible" >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Фактор" Width="1*" Binding="{Binding Path=header}" IsReadOnly="true" ClipboardContentBinding="{x:Null}"/>
+                                    <DataGridTextColumn Header="Min" Width="1*" Binding="{Binding Path=val1, Converter={StaticResource DoubleConverter}}" ClipboardContentBinding="{x:Null}"/>
+                                    <DataGridTextColumn Header="Max" Width="1*" Binding="{Binding Path=val2, Converter={StaticResource DoubleConverter}}" ClipboardContentBinding="{x:Null}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </GroupBox>
+                        <GroupBox Grid.Row="0" Grid.Column="1" Header="Свойства">
+                            <DataGrid Name="yDescrGrid" AutoGenerateColumns="False" Visibility="Visible">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Свойство" Width="1*" Binding="{Binding Path=header}" ClipboardContentBinding="{x:Null}"/>
+                                    <DataGridTextColumn Header="Min" Width="1*" Binding="{Binding Path=val1, Converter={StaticResource DoubleConverter}}" ClipboardContentBinding="{x:Null}"/>
+                                    <DataGridTextColumn Header="Max" Width="1*" Binding="{Binding Path=val2, Converter={StaticResource DoubleConverter}}" ClipboardContentBinding="{x:Null}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </GroupBox>
+                        <DockPanel Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+                            <GroupBox DockPanel.Dock="Top" Header="Сталь">
+                                <Expander Name="expanderDes" Header="" ExpandDirection="Down">
+                                    <StackPanel HorizontalAlignment="Stretch"  Margin="5,0,0,0">
+                                        <DockPanel>
+                                            <Label Content="Марка стали" DockPanel.Dock="Left"/>
+                                            <ComboBox Name="markComboBox" DockPanel.Dock="Top" Height="20" VerticalAlignment="Top" Margin="45,3,5,3" SelectionChanged="markComboBox_SelectionChanged" IsReadOnly="True"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <Label Content="Стандарт на марку" DockPanel.Dock="Left"/>
+                                            <ComboBox Name="gostComboBox" DockPanel.Dock="Top" Height="20" VerticalAlignment="Top" Margin="11,3,5,3" SelectionChanged="gostComboBox_SelectionChanged" />
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <Label Content="Выберите вытяжку" DockPanel.Dock="Left"/>
+                                            <ComboBox Name="typeComboBox" DockPanel.Dock="Top" Height="20" VerticalAlignment="Top" Margin="10,3,5,3" SelectionChanged="typeComboBox_SelectionChanged" />
+                                        </DockPanel>
+                                    </StackPanel>
+                                </Expander>
+
+                            </GroupBox>
+                            <GroupBox Margin="0" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" Header="Параметры построения">
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Начальное число подинтервалов" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="numIntervalsTextBox" Margin="17,3,5,3" Text="3" HorizontalAlignment="Stretch" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Параметр альфа для критерия U" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="alphaTextBox" Margin="22,3,5,3" Text="0,01" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Параметр бета для критерия U" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="betaTextBox" Margin="30,3,5,3" Text="3" />
+                                    </DockPanel>
+
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Параметр изменения границ" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="shiftTextBox" Margin="40,3,5,3" Text="2" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Параметр глубины изменения" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="degreeTextBox" Margin="33,3,5,3" Text="5" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Точность критерия U" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="epsTextBox" Margin="30,3,5,3" Text="0,001" />
+                                    </DockPanel>
+                                    <UniformGrid Rows="1">
+                                        <Button Name="getBoundsBtn" Content="Установить границы по выборке" Margin="3" Click="getBoundsBtn_Click" />
+                                        <Button Name="descrBoundsBtn" Content="Построить модель" Margin="3" Click="descrBoundsBtn_Click" />
+                                    </UniformGrid>
+
+                                </DockPanel>
+                            </GroupBox >
+
+                        </DockPanel>
+                           
+                        <GroupBox Name="groupBoxAfter" Header="Дискретная модель" Grid.Row="0">
+                            <DataGrid Name="xOptDescrGrid" AutoGenerateColumns="False" Grid.Row="0"  Visibility="Visible">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Фактор" Width="1*" Binding="{Binding Path=descr}" ClipboardContentBinding="{x:Null}"/>
+                                    <DataGridTextColumn Header="Min" Width="1*" Binding="{Binding Path=lower}" ClipboardContentBinding="{x:Null}"/>
+                                    <DataGridTextColumn Header="Max" Width="1*" Binding="{Binding Path=upper}" ClipboardContentBinding="{x:Null}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </GroupBox>
+                        <GridSplitter Grid.Row="1" Grid.Column="1" Height="3" Margin="0,-3,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+                        <GridSplitter Grid.Row="2" Height="3" Margin="0,-3,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#02000000" />
+                        <GridSplitter Grid.Column="0" Grid.RowSpan="2" Width="3" VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+                    </Grid>
+
+
+
+
+
+                </TabItem>
+                <TabItem Header="Оптимизация" Name="tabItemO">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Header="Выходные свойства" Grid.Row="1" Grid.Column="0" Margin="3">
+                            <DataGrid Name="yOptGrid"  AutoGenerateColumns="False"
+                              IsManipulationEnabled="True" SelectionUnit="Cell" >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Свойство" Width="2*" Binding="{Binding Path=header}" IsReadOnly="True" ClipboardContentBinding="{x:Null}" />
+                                    <DataGridTextColumn Header="Значение (эталон)" Width="3*" Binding="{Binding Path=val1, Converter={StaticResource DoubleConverter}}"
+                                                IsReadOnly="False" ClipboardContentBinding="{x:Null}"/>
+                                    <DataGridTextColumn Header="Значение по модели" Width="3*" Binding="{Binding Path=val2, StringFormat=g}" IsReadOnly="True" Visibility="Hidden" ClipboardContentBinding="{x:Null}" />
+                                    <DataGridTextColumn Header="Невязка" Width="4*" Binding="{Binding Path=val3,  StringFormat=g}" IsReadOnly="True" Visibility="Hidden"  ClipboardContentBinding="{x:Null}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </GroupBox>
+                        
+                        <Grid Grid.Row="2" Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" />
+                                <RowDefinition Height="50" />
+                            </Grid.RowDefinitions>
+
+                            <GroupBox Margin="0" Grid.Column="0" Header="Параметры построения">
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Точность основной задачи" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="epsxTextBox" Margin="40,3,5,3" Text="0,0000001" HorizontalAlignment="Stretch" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Точность безусловных подзадач" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="epsgTextBox" Margin="10,3,5,3" Text="0,0000001" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Максимальное число итераций" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="iterTextBox" Margin="15,3,5,3" Text="10000" />
+                                    </DockPanel>
+                                    <Button DockPanel.Dock="Top" Content="Рассчитать технологию" MaxHeight="50" Name="optimizeBtn" Margin="10,5" Click="optimizeBtn_Click" />
+                                </DockPanel>
+                            </GroupBox >
+                            <GroupBox Header="Анализ модели" Grid.Row="1">
+                                <UniformGrid>
+                                    <Label Name="resultErrorLabel" Content="Модель не построена" HorizontalAlignment="Left" />
+                                </UniformGrid>
+                            </GroupBox>
+                        </Grid>
+                        <GroupBox Header="Технология" DockPanel.Dock="Left" Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Margin="3">
+                            <DataGrid Name="xOptGrid"  AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Фактор" Binding="{Binding Path=header}" ClipboardContentBinding="{x:Null}" Width="1*" />
+                                    <DataGridTextColumn Header="Значение" Width="1*" Binding="{Binding Path=val1}" ClipboardContentBinding="{x:Null}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </GroupBox>
+                        <GridSplitter Height="4" Grid.Row="2" Grid.Column="0" Margin="2,-2,2,0" Name="gridSplitter1" VerticalAlignment="Top" HorizontalAlignment="Stretch" />
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="Корректировка технологии" Name="tabItemK">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox Header="Технология" Grid.Row="1" Grid.Column="0" Margin="3" >
+                            <DataGrid Name="XcurrentGrid"  AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Фактор" Binding="{Binding Path=header}" ClipboardContentBinding="{x:Null}" Width="1*" IsReadOnly="True" />
+                                    <DataGridTextColumn Header="Оптимальное зн-е" Width="2*" Binding="{Binding Path=val1}" ClipboardContentBinding="{x:Null}" IsReadOnly="True"  />
+                                    <DataGridTextColumn Header="Фактическое зн-е" Width="2*" Binding="{Binding Path=val2, Converter={StaticResource DoubleConverter}}" ClipboardContentBinding="{x:Null}" IsReadOnly="False" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </GroupBox>
+                       <DockPanel Grid.Row="1" Grid.Column="1">
+                            <GroupBox DockPanel.Dock="Bottom" Header="Параметры построения">
+                                <DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Точность основной задачи" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="epsxTextBox2" Margin="40,3,5,3" Text="0,00001" HorizontalAlignment="Stretch" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Точность безусловных подзадач" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="epsgTextBox2" Margin="10,3,5,3" Text="0,00001" />
+                                    </DockPanel>
+                                    <DockPanel DockPanel.Dock="Top">
+                                        <Label Content="Максимальное число итераций" VerticalAlignment="Center" DockPanel.Dock="Left" />
+                                        <TextBox Name="iterTextBox2" Margin="15,3,5,3" Text="10000" />
+                                    </DockPanel>
+                                    <Button Content="Очистить факторы" MaxHeight="50" Name="clearBtn" Margin="5,5,0,5" Click="clearBtn_Click" />
+                                    <Button Content="Скорректировать технологию" MaxHeight="50" Name="correctBtn" Margin="10,5" Click="correctBtn_Click" />
+                                </DockPanel>
+                            </GroupBox >
+                            <GroupBox Header="Выходные свойства">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*" />
+                                        <RowDefinition Height="1*" />
+                                    </Grid.RowDefinitions>
+
+                                    <DataGrid Name="YcurrentGrid" Grid.Row="0"  Margin="3" AutoGenerateColumns="False" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Свойство" Binding="{Binding Path=header}" ClipboardContentBinding="{x:Null}" Width="1*"/>
+                                            <DataGridTextColumn Header="Оптимальное зн-е" Width="2*" Binding="{Binding Path=val1}" ClipboardContentBinding="{x:Null}"/>
+                                            <DataGridTextColumn Header="Скорректированное зн-е" Width="2*" Binding="{Binding Path=val2}" ClipboardContentBinding="{x:Null}"/>
+                                            <DataGridTextColumn Header="Невязка" Width="2*" Binding="{Binding Path=val3}" ClipboardContentBinding="{x:Null}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <DataGrid Name="YolDcurrentGrid" Grid.Row="2"  Margin="3" AutoGenerateColumns="False" IsReadOnly="True">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="Свойство" Binding="{Binding Path=header}" ClipboardContentBinding="{x:Null}" Width="1*"/>
+                                            <DataGridTextColumn Header="Оптимальное зн-е" Width="2*" Binding="{Binding Path=val1}" ClipboardContentBinding="{x:Null}"/>
+                                            <DataGridTextColumn Header="Зн-е без корректировки" Width="2*" Binding="{Binding Path=val2}" ClipboardContentBinding="{x:Null}"/>
+                                            <DataGridTextColumn Header="Невязка" Width="2*" Binding="{Binding Path=val3}" ClipboardContentBinding="{x:Null}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Grid>
+                                
+                                
+                            </GroupBox>
+                                
+                        </DockPanel>
+
+                    </Grid>
+
+                </TabItem>
+            </TabControl>
+        </DockPanel>
+        
+    </Grid>
+</Window>
